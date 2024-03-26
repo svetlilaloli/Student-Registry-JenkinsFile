@@ -4,7 +4,7 @@ pipeline {
     stages {
         stage('Install dependencies') {
             steps {
-                batchFile('npm install')
+                bat 'npm install'
             }
         }
     }
