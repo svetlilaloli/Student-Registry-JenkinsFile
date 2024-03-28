@@ -1,10 +1,10 @@
 pipeline {
-    agent any
-    environment {
-        REPO = 'svetlilaloli/student-registry-jenkins'
-        BUILD_NUMBER = '${env.BUILD_NUMBER}'
-        IMAGE = '${REPO}:1.0.${BUILD_NUMBER}'
-    }
+	agent any
+	environment {
+    	REPO = 'svetlilaloli/student-registry-jenkins'
+    	BUILD_NUMBER = '${env.BUILD_NUMBER}'
+    	IMAGE = '${REPO}:1.0.${BUILD_NUMBER}'
+  	}
     stages {
         stage('Install dependencies') {
             steps {
@@ -22,24 +22,32 @@ pipeline {
             }
         }
         stage('Build Docker image'){
-            bat 'docker build -t %IMAGE% .'
+            steps {
+              bat 'docker build -t %IMAGE% .'
+            }
         }
         stage('Tag latest'){
-            bat 'docker tag %IMAGE% %REPO%:latest'
+          	steps {
+            	bat 'docker tag %IMAGE% %REPO%:latest'
+          	}
         }
         stage('Push images to DockerHub'){
-            withCredentials([usernamePassword(credentialsId: 'c4cea218-b85f-462c-9098-d10aa6056303', 
-                    passwordVariable: 'password', usernameVariable: 'username')]) {
-                bat 'docker login -u %username% --password %password%'
-            }
-            bat 'docker push %IMAGE%'
-            bat 'docker push %REPO%:latest'
+          	steps {
+            	withCredentials([usernamePassword(credentialsId: 'c4cea218-b85f-462c-9098-d10aa6056303', 
+                    	passwordVariable: 'password', usernameVariable: 'username')]) {
+                	bat 'docker login -u %username% --password %password%'
+            	}
+            	bat 'docker push %IMAGE%'
+            	bat 'docker push %REPO%:latest'
+          	}
         }
         stage('Deploy') {
             when {
               branch 'main'
             }
-            bat 'docker-compose up -d'
+            steps {
+            	bat 'docker-compose up -d'
+            }
         }
     }
 }
