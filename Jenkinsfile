@@ -30,9 +30,9 @@ pipeline {
             withCredentials([usernamePassword(credentialsId: 'c4cea218-b85f-462c-9098-d10aa6056303', 
                 passwordVariable: 'password', usernameVariable: 'username')]) {
             bat 'docker login -u %username% --password %password%'
-            bat 'docker tag %IMAGE% %REPO%:latest
-            bat 'docker push %IMAGE%
-            bat 'docker push %REPO%:latest
+            bat 'docker tag %IMAGE% %REPO%:latest'
+            bat 'docker push %IMAGE%'
+            bat 'docker push %REPO%:latest'
             bat 'docker-compose up -d'
           }
         }
