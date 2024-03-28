@@ -21,21 +21,25 @@ pipeline {
               bat 'npm test'
             }
         }
-        stage('Deploy') {
-          when {
-            branch 'main'
-          }
-        steps {
+        stage('Build Docker image'){
             bat 'docker build -t %IMAGE% .'
-            withCredentials([usernamePassword(credentialsId: 'c4cea218-b85f-462c-9098-d10aa6056303', 
-                passwordVariable: 'password', usernameVariable: 'username')]) {
-            bat 'docker login -u %username% --password %password%'
+        }
+        stage('Tag latest'){
             bat 'docker tag %IMAGE% %REPO%:latest'
+        }
+        stage('Push images to DockerHub'){
+            withCredentials([usernamePassword(credentialsId: 'c4cea218-b85f-462c-9098-d10aa6056303', 
+                    passwordVariable: 'password', usernameVariable: 'username')]) {
+                bat 'docker login -u %username% --password %password%'
+            }
             bat 'docker push %IMAGE%'
             bat 'docker push %REPO%:latest'
-            bat 'docker-compose up -d'
-          }
         }
-      }
+        stage('Deploy') {
+            when {
+              branch 'main'
+            }
+            bat 'docker-compose up -d'
+        }
     }
 }
