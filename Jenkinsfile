@@ -2,7 +2,7 @@ pipeline {
 	agent any
 	environment {
     	REPO = 'svetlilaloli/student-registry-jenkins'
-		IMAGE = '%REPO%:1.0.%BUILD_NUMBER%'
+		IMAGE = '${REPO}:1.0.${BUILD_NUMBER}'
   	}
     stages {
         // stage('Install dependencies') {
