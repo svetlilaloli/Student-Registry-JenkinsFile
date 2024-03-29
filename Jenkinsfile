@@ -46,7 +46,7 @@ pipeline {
             }
             steps {
 				bat 'docker pull %REPO%:latest'
-            	bat 'docker-compose up -d'
+            	bat 'docker run -d -p 3030 %REPO%:latest'
             }
         }
     }
