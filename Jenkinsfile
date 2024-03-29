@@ -41,9 +41,9 @@ pipeline {
           	}
         }
         stage('Deploy') {
-            when {
-              branch 'main'
-            }
+            // when {
+            //   branch 'main'
+            // }
             steps {
 				bat 'docker pull %REPO%:latest'
             	bat 'docker run -d -p 3030 %REPO%:latest'
