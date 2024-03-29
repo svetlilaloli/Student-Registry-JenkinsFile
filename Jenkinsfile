@@ -2,7 +2,7 @@ pipeline {
 	agent any
 	environment {
     	REPO = 'svetlilaloli/student-registry-jenkins'
-    	IMAGE = '%REPO%:1.0.%env.BUILD_NUMBER%'
+		IMAGE = '%REPO%:1.0.%BUILD_NUMBER%'
   	}
     stages {
         // stage('Install dependencies') {
@@ -22,12 +22,13 @@ pipeline {
         // }
         stage('Build Docker image'){
             steps {
-              	bat 'docker build -t %REPO%:1.0.%env.BUILD_NUMBER% .'
+				bat 'echo %IMAGE%'
+              	// bat 'docker build -t %REPO%:1.0.%BUILD_NUMBER% .'
             }
         }
         // stage('Tag latest'){
         //   	steps {
-        //     	bat 'docker tag ${IMAGE} ${REPO}:latest'
+        //     	bat 'docker tag %REPO%:1.0.%BUILD_NUMBER% %REPO%:latest'
         //   	}
         // }
         // stage('Push images to DockerHub'){
