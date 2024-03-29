@@ -2,8 +2,7 @@ pipeline {
 	agent any
 	environment {
     	REPO = 'svetlilaloli/student-registry-jenkins'
-    	BUILD_NUMBER = '${env.BUILD_NUMBER}'
-    	IMAGE = '${REPO}:1.0.${BUILD_NUMBER}'
+    	IMAGE = '%REPO%:1.0.%BUILD_NUMBER%'
   	}
     stages {
         stage('Install dependencies') {
@@ -23,7 +22,7 @@ pipeline {
         }
         stage('Build Docker image'){
             steps {
-              bat 'docker build -t %IMAGE% .'
+              	bat 'docker build -t %IMAGE% .'
             }
         }
         stage('Tag latest'){
