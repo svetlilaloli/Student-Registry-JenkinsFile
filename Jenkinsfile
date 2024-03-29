@@ -22,7 +22,7 @@ pipeline {
         }
         stage('Build Docker image'){
             steps {
-				echo '$REPO:1.0.${env.BUILD_NUMBER}'
+				echo '%REPO%:1.0.%env.BUILD_NUMBER%'
               	// bat 'docker build -t %IMAGE% .'
             }
         }
