@@ -45,6 +45,7 @@ pipeline {
               branch 'main'
             }
             steps {
+				bat 'docker pull %REPO%:latest'
             	bat 'docker-compose up -d'
             }
         }
