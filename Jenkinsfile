@@ -1,6 +1,6 @@
 pipeline {
 	agent any
-	environment {
+	script {
     	REPO = 'svetlilaloli/student-registry-jenkins'
 		IMAGE = '%REPO%:1.0.%BUILD_NUMBER%'
   	}
@@ -22,7 +22,7 @@ pipeline {
         // }
         stage('Build Docker image'){
             steps {
-				bat set
+				bat 'echo %IMAGE%'
               	// bat 'docker build -t %REPO%:1.0.%BUILD_NUMBER% .'
             }
         }
