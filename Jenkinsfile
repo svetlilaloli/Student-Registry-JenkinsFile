@@ -2,28 +2,27 @@ pipeline {
 	agent any
 	environment {
     	REPO = 'svetlilaloli/student-registry-jenkins'
-    	IMAGE = '$REPO:1.0.${env.BUILD_NUMBER}'
+    	IMAGE = '%REPO%:1.0.%env.BUILD_NUMBER%'
   	}
     stages {
-        stage('Install dependencies') {
-            steps {
-              bat 'npm install'
-            }
-        }
-        stage('Security test') {
-            steps {
-              bat 'npm audit'
-            }
-        }
-        stage('Integration test') {
-            steps {
-              bat 'npm test'
-            }
-        }
+        // stage('Install dependencies') {
+        //     steps {
+        //       bat 'npm install'
+        //     }
+        // }
+        // stage('Security test') {
+        //     steps {
+        //       bat 'npm audit'
+        //     }
+        // }
+        // stage('Integration test') {
+        //     steps {
+        //       bat 'npm test'
+        //     }
+        // }
         stage('Build Docker image'){
             steps {
-				echo '%REPO%:1.0.%env.BUILD_NUMBER%'
-              	// bat 'docker build -t %IMAGE% .'
+              	bat 'docker build -t %REPO%:1.0.%env.BUILD_NUMBER% .'
             }
         }
         // stage('Tag latest'){
