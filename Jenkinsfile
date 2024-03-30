@@ -5,6 +5,16 @@ pipeline {
       // IMAGE = 'svetlilaloli/student-registry-jenkins:1.0.%BUILD_NUMBER%'
   	}
     stages {
+        stage("Setup"){
+            steps{
+                script {
+                    def tag = "${env.REPO}:1.0.${BUILD_NUMBER}"
+                    echo "Full repo: ${tag}"
+                    // Store the value in an environment variable for access in subsequent stages
+                    env.IMAGE = tag
+                }
+            }
+        }
         stage('Install dependencies') {
             steps {
               bat 'npm install'
@@ -22,12 +32,12 @@ pipeline {
         }
         stage('Build Docker image'){
             steps {
-              	bat 'docker build -t %REPO%:1.0.%BUILD_NUMBER% .'
+              	bat 'docker build -t %IMAGE% .'
             }
         }
         stage('Tag latest'){
           	steps {
-            	bat 'docker tag %REPO%:1.0.%BUILD_NUMBER% %REPO%:latest'
+            	bat 'docker tag %IMAGE% %REPO%:latest'
           	}
         }
         stage('Push images to DockerHub'){
@@ -36,7 +46,7 @@ pipeline {
                     	passwordVariable: 'password', usernameVariable: 'username')]) {
                 	bat 'docker login -u %username% --password %password%'
             	}
-            	bat 'docker push %REPO%:1.0.%BUILD_NUMBER%'
+            	bat 'docker push %IMAGE%'
             	bat 'docker push %REPO%:latest'
           	}
         }
