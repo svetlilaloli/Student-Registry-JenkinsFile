@@ -3,6 +3,7 @@ pipeline {
 	environment {
     	REPO = 'svetlilaloli/student-registry-jenkins'
 		// IMAGE = '%REPO%:1.0.%BUILD_NUMBER%'
+      IMAGE = bat(returnStdout: true, script: '%REPO%:1.0.%BUILD_NUMBER%')
   	}
     stages {
         stage('Install dependencies') {
@@ -22,12 +23,12 @@ pipeline {
         }
         stage('Build Docker image'){
             steps {
-              	bat 'docker build -t %REPO%:1.0.%BUILD_NUMBER% .'
+              	bat 'docker build -t %IMAGE% .'
             }
         }
         stage('Tag latest'){
           	steps {
-            	bat 'docker tag %REPO%:1.0.%BUILD_NUMBER% %REPO%:latest'
+            	bat 'docker tag %IMAGE% %REPO%:latest'
           	}
         }
         stage('Push images to DockerHub'){
@@ -36,7 +37,7 @@ pipeline {
                     	passwordVariable: 'password', usernameVariable: 'username')]) {
                 	bat 'docker login -u %username% --password %password%'
             	}
-            	bat 'docker push %REPO%:1.0.%BUILD_NUMBER%'
+            	bat 'docker push %IMAGE%'
             	bat 'docker push %REPO%:latest'
           	}
         }
