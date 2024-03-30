@@ -1,17 +1,12 @@
 pipeline {
 	agent any
-	environment {
-    	REPO = 'svetlilaloli/student-registry-jenkins'
-      // IMAGE = 'svetlilaloli/student-registry-jenkins:1.0.%BUILD_NUMBER%'
-  	}
     stages {
         stage("Setup"){
             steps{
                 script {
-                    def tag = "${env.REPO}:1.0.${BUILD_NUMBER}"
-                    echo "Full repo: ${tag}"
-                    // Store the value in an environment variable for access in subsequent stages
-                    env.IMAGE = tag
+					env.IMAGE = 'svetlilaloli/student-registry-jenkins'
+                    def tag = "${env.IMAGE}:1.0.${BUILD_NUMBER}"
+                    env.IMAGE_TAG = tag
                 }
             }
         }
@@ -32,12 +27,12 @@ pipeline {
         }
         stage('Build Docker image'){
             steps {
-              	bat 'docker build -t %IMAGE% .'
+              	bat 'docker build -t %IMAGE_TAG% .'
             }
         }
         stage('Tag latest'){
           	steps {
-            	bat 'docker tag %IMAGE% %REPO%:latest'
+            	bat 'docker tag %IMAGE_TAG% %IMAGE%:latest'
           	}
         }
         stage('Push images to DockerHub'){
@@ -46,8 +41,8 @@ pipeline {
                     	passwordVariable: 'password', usernameVariable: 'username')]) {
                 	bat 'docker login -u %username% --password %password%'
             	}
-            	bat 'docker push %IMAGE%'
-            	bat 'docker push %REPO%:latest'
+            	bat 'docker push %IMAGE_TAG%'
+            	bat 'docker push %IMAGE%:latest'
           	}
         }
         stage('Deploy') {
@@ -55,8 +50,8 @@ pipeline {
             //   branch 'main'
             // }
             steps {
-				bat 'docker pull %REPO%:latest'
-            	bat 'docker run -d -p 3030:3030 %REPO%:latest'
+				bat 'docker pull %IMAGE%:latest'
+            	bat 'docker run -d -p 3030:3030 --name student-registry-app %IMAGE%:latest'
             }
         }
     }
